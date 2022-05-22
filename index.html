@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- JQuery -->
+    <link rel="stylesheet" href="style.css">
+    <title>チャットアプリ</title>
+</head>
+<body>
+    <header id="input">
+       <input type="text" id="nameIn" value="" placeholder="YOUR NAME">
+        <textarea id="msgIn"  placeholder="MESSAGE" value="" required="required" pattern="" title=""></textarea>
+    </header>
+
+    <section id = "buttons">
+        <a href="#" id="reset"><p id="res">DELETE ALL</p></a>
+      </section>
+    <main>
+        <section class="container">
+            <span id="year_pulldown"></span>
+            <span id="month_pulldown"></span>
+            <span id="day_pulldown"></span>
+            <span id="date"></span>
+            <section id = "output">
+                <article id="note"><p>●</p>
+                    <h2>YOUR BOARD<br>(YOU☞)</h2> 
+                </article>
+            </section>
+        </section>
+        <button class="backTop"><span class="arrow"></span></button>
+    </main>
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--/ コンテンツ表示画面 -->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-analytics.js";
+    import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved, onChildChanged, orderByChild, orderByKey, orderByValue}
+        from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.8.1/firebase-database.min.js";
+    
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMdWvHam6-cQ8_DPPckrhhbqjkir0q5qA",
+      authDomain: "kadai-4464e.firebaseapp.com",
+      projectId: "kadai-4464e",
+      storageBucket: "kadai-4464e.appspot.com",
+      messagingSenderId: "713053552247",
+      appId: "1:713053552247:web:e113e197c0ebd3c5da1072",
+      measurementId: "G-L9F9QW9M39"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase(app)
+    const dbRef = ref(db, "kadai")
+    
+    //↓ここからコード
+   
+    
+    // 現在日時
+    // var current = new Date();
+    // var year_val = current.getFullYear();
+    // var month_val = current.getMonth() + 1;
+    // var day_val = current.getDate();
+
+    //  // プルダウン生成
+    //  $('#year_pulldown').html('<select name="year">');
+    //     for (var i = 2000; i <= year_val + 1; i++) {
+    //         $('#year_pulldown select').append('<option value="' + i + '">' + i + '</option>');
+    //     }
+
+    //     $('#year_pulldown').append('/');
+
+    //     $('#month_pulldown').html('<select name="month">');
+    //     for (var i = 1; i <= 12; i++) {
+    //         $('#month_pulldown select').append('<option value="' + i + '">' + i + '</option>');
+    //     }
+    //     $('#month_pulldown').append('/');
+        
+    //     $('#day_pulldown').html('<select name="day">');
+    //     for (var i = 1; i <= 31; i++) {
+    //         $('#day_pulldown select').append('<option value="' + i + '">' + i + '</option>');
+    //     }
+    //     $('#day_pulldown').append('/');
+        
+    //     // デフォルト
+    //     $('select[name=year] option[value=' + year_val + ']').prop('selected', true);
+    //     $('select[name=month] option[value=' + month_val + ']').prop('selected', true);
+    //     $('select[name=day] option[value=' + day_val + ']').prop('selected', true);
+
+    // function compare(a, b) {
+    //     // Use toUpperCase() to ignore character casing
+    //     const timeA = a.minute
+    //     const timeB = b.minute
+
+    //     let comparison = 0;
+    //     if (tiemeA > timeB) {
+    //         comparison = 1;
+    //     } else if (timeA < timeB) {
+    //         comparison = -1;
+    //     }
+    //     return comparison;
+    $('#msgIn').keypress(function (e) {
+        if (e.keyCode == 13) {
+            var name = $('#nameIn').val();
+            var text = $('#msgIn').val();
+            var timestamp = firebase.database.ServerValue.TIMESTAMP;
+            var year = (new Date).getFullYear()
+            var month = (new Date).getMonth()+1
+            var day = (new Date).getDate()
+            var hour = (new Date).getHours()
+            var minute = (new Date).getMinutes()
+            const msg = {
+                name: name,
+                text: text,
+                year: year,
+                month: month,
+                day: day,
+                hour: hour,
+                timestamp: timestamp,
+                date: `${year}${month}${day}`,
+                minute: minute
+                }
+
+            var newPostRef = push(dbRef);
+            set(newPostRef, msg)
+            console.log(msg)
+        }
+    });
+    console.log(dbRef)
+    onChildAdded(dbRef, function(data){
+            const msg = data.val()
+            const key = data.key
+            let g = `<div id = "${msg.name}", class = "${key}"><p id = "${key}" class="message">`
+            g += "NAME："+msg.name
+            g += "<br>"
+            g += msg.text
+            g += "<br><p id = 'msgTime'>"
+            g += `${msg.year}/${msg.month}/${msg.day}<br>`
+            g += `${msg.hour}:${msg.minute}`
+            g += "</p>"
+            g += `<button id ="${key}" class = 'delete'> _ﾛ(｡｡ )m DELETE</button>`
+            g += "</div>"
+            $("#output").append(g)
+            $("div").css("margin", "20px 460px 20px 0px")
+            $("div").css("padding", "20px")
+            $("div").css("border", "1px solid white")
+            $("div").css("border-radius", "10px")
+            $("div").css("background-color", "#6699FF")
+            $("div").css("color", "white")
+            $("div").css("width", "300px")
+            $("div").css("height", "250px")
+            $("div").css("font-weight", "bold")
+            $("div").css("font-size", "20px")
+
+    })
+    //自分の発言は右寄せ
+    onChildAdded(dbRef, function(data){
+        const msg = data.val()
+       $(`div#${msg.name}`).css("margin", "20px 20px 20px 460px")
+       $(`div#${msg.name}`).css("border", "2px solid white")
+       $(`div#${msg.name}`).css("background-color", "#3399FF")
+
+    })
+    
+    //全削除
+    $("#reset").on("click", function(){
+      if(window.confirm('Are you sure to delete all?')){
+        set(dbRef,"")
+    }
+    else{
+    　  window.alert('Canceled'); 
+    }
+    })
+    //一行削除
+    $("#output").on("click", ".delete", function(){
+        var key = $(this).attr("id")
+        remove(ref(db, `kadai/${key}`))
+    })
+    onChildRemoved(dbRef, function(data){
+        var deletekey = data.key
+        $(`.${deletekey}`).remove()
+    })
+
+    //スムーススクロール
+    $('.backTop').each(function(){
+    var $window = $(window);
+    //上へ戻るボタンの出現設定
+    $window.on('scroll', function(){
+        //スクロール量が100px以上ならto-topクラスを追加
+        if ($(this).scrollTop() < 100 ){
+            $('.backTop').removeClass('to-top');
+        } else {
+            $('.backTop').addClass('to-top');
+        }
+    });
+
+    //scrollTop()が適用される要素を取得
+    var el = scrollableElement('html','body');
+
+    //クリックされたら一番上に戻る
+    $(this).on('click',function(event){
+        event.preventDefault();
+        $(el).animate({scrollTop: 0},300);
+    });
+
+    //scrollTop()が適用される要素を取得する関数
+    function scrollableElement(){
+        var i, len, el, $el, scrollable;
+        for ( i = 0, len = arguments.length; i < len; i++){
+            el = arguments[i],
+            $el = $(el);
+            if ($el.scrollTop() > 0){
+                return el;
+            } else {
+                $el.scrollTop(1);
+                scrollable = $el.scrollTop() > 0;
+                $el.scrollTop(0);
+                if (scrollable){
+                    return el;
+                }
+            }
+        }
+        return [];
+    }
+    
+    //ウィンドウのスクロールイベントを発生させる
+    $window.trigger('scroll');
+
+});
+
+  </script>
+
+    
+</body>
+</html>

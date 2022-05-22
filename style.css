@@ -1,0 +1,133 @@
+header{
+    display: flex;
+    flex-direction: column;
+}
+#nameIn{
+    border-radius: 2px;
+    width: 300px;
+    margin: 0 auto;
+}
+
+#nameIn {
+    height: 2.4em;
+    padding: 0 16px;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 0 0 0 1px #ccc inset;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+#nameIn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px rgb(33, 150, 243) inset;
+}
+#msgIn {
+    height: 2.4em;
+    padding: 0 16px;
+    border-radius: 4px;
+    border: none;
+    box-shadow: 0 0 0 1px #ccc inset;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+#msgIn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px rgb(33, 150, 243) inset;
+}
+
+#msgIn {
+    border-radius: 5px;
+    width: 300px;
+    height: 200px;
+    overflow-y: scroll;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    margin: 0 auto;
+    }
+#output{
+    margin-right: auto;
+    margin-left: auto;
+    background-image: url(CorkBoard02.jpg);
+    width: 800px;
+    height: 1200px;
+    overflow-y: auto;
+    border-radius: 20px;
+    margin-top: 40px;
+    padding: 30px;
+}
+
+#note{
+    text-align: center;
+    border: 1px white;
+    background-color: beige;
+    width: 200px;
+    height: 200px
+    ;
+}
+#direction{
+    text-align: center;    
+}
+article{
+    margin: 0 auto;
+}
+article h2{
+    vertical-align: middle;
+}
+#note p{
+    text-align: center;
+    color: red;
+    font-size: 40px;
+}
+#buttons{
+    text-align: center;
+    margin-top: 20px;
+}
+#reset {
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    background: #668ad8;/*ボタン色*/
+    color: #FFF;
+    border-bottom: solid 4px #627295;
+    border-radius: 3px;
+  }
+  #reset:active {
+    /*ボタンを押したとき*/
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px);/*下に動く*/
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);/*影を小さく*/
+    border-bottom: none;
+  }
+
+.backTop {
+    height: 70px;
+    width: 80px;
+    position: fixed;
+    bottom: 6vh;
+    right: -80px;
+    border: none;
+    background: #383838;
+    opacity: 0.6;
+    border-radius: 5px 0 0 5px;
+    transition-duration:300ms;
+}
+.arrow {
+        box-sizing: border-box;
+        position: absolute;
+        top: 20px;
+        width: 30px;
+        height: 30px;
+        border-top: solid 7px white;
+        border-left: solid 7px white;
+        transform:rotate(45deg);
+        transform-origin: left top;
+    }
+    
+
+.to-top {
+    right: 0px;
+}
